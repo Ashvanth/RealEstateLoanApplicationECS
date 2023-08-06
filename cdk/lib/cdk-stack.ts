@@ -13,16 +13,24 @@ export class RealEstateLoanAppFargateStack extends cdk.Stack {
       vpc: vpc,
     });
 
+    const executionRole = new iam.Role(this, 'ExecutionRole', {
+      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+    });
+
     const ecrRepository = ecr.Repository.fromRepositoryName(
       this,
       'MyEcrRepository',
       'ashvanth'
     );
 
+    ecrRepository.grantPull(executionRole);
+
+
 
     const taskDefinition = new ecs.FargateTaskDefinition(this, 'MyTaskDefinition', {
       memoryLimitMiB: 512,
       cpu: 256,
+      executionRole: executionRole,
     });
 
     const container = taskDefinition.addContainer('pmilabsContainer', {
@@ -37,9 +45,9 @@ export class RealEstateLoanAppFargateStack extends cdk.Stack {
       { containerPort: 443, hostPort: 443, protocol: ecs.Protocol.TCP },
     );
 
-    const executionRole = new iam.Role(this, 'ExecutionRole', {
-      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
-    });
+   
+
+    
 
     const service = new ecs.FargateService(this, 'MyFargateServiceDemo', {
       cluster: cluster,
