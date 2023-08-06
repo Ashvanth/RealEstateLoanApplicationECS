@@ -1,5 +1,6 @@
 package com.demo.dnb.controller;
 
+import com.demo.dnb.entity.UserInfo;
 import com.demo.dnb.service.ApplicantionService;
 import com.demo.dnb.entity.ApplicantInformation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,11 @@ public class ApplicationController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<?>> fetchApplications() {
         return ResponseEntity.status(200).body(applicantionService.fetchApplications());
+    }
+
+    @PostMapping("/new")
+    public String addNewUser(@RequestBody UserInfo userInfo){
+        return applicantionService.addUser(userInfo);
     }
 
 }

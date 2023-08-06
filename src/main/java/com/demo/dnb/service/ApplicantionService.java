@@ -1,10 +1,13 @@
 package com.demo.dnb.service;
 
 import com.demo.dnb.entity.ApplicantInformation;
+import com.demo.dnb.entity.UserInfo;
 import com.demo.dnb.repository.ApplicantionRepository;
+import com.demo.dnb.repository.UserInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +19,15 @@ public class ApplicantionService {
 
     private static ApplicantionRepository applicantionRepository;
 
+    private static UserInfoRepository userInfoRepository;
+
     @Autowired
-    public ApplicantionService(ApplicantionRepository applicantionRepository) {
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public ApplicantionService(ApplicantionRepository applicantionRepository,UserInfoRepository userInfoRepository) {
         this.applicantionRepository = applicantionRepository;
+        this.userInfoRepository = userInfoRepository;
     }
 
     public String submitApplication(ApplicantInformation applicantInformation)  throws DataAccessException{
@@ -44,5 +53,11 @@ public class ApplicantionService {
             return true;
         }
 
+    }
+
+    public String addUser(UserInfo userInfo) {
+        userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
+        userInfoRepository.save(userInfo);
+        return "user added to system ";
     }
 }
