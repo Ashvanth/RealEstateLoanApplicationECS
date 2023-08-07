@@ -46,6 +46,7 @@ public class ApplicantionService {
 
     public Boolean validateEquityAmount(ApplicantInformation applicantInformation) {
         double percentage = applicantInformation.getLoanAmount() * 0.15;
+        log.debug("Equity amount value -----" + percentage);
         Double roundedPercentage = Double.valueOf(String.format("%.2f", percentage));
         if (applicantInformation.getEquityAmount() < roundedPercentage) {
             return false;

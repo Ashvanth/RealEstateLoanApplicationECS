@@ -29,19 +29,24 @@ public class ApplicationController {
     }
 
     @PostMapping("/data")
-    //@PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity submitApplicationInformation(@RequestBody ApplicantInformation applicantInformation) {
-       try {
-        String result = applicantionService.submitApplication(applicantInformation);
-        if (result != null && !result.contains("INVALID")) {
-            return ResponseEntity.status(HttpStatus.OK).body("Application Sent to Advisor , " +
-                    "your application ID is -> "+result);
-        } else if(result != null && result.contains("INVALID")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EQUITY AMOUNT IS NOT 15 % of LOAN Amount");
-        }}catch (DataAccessException e){
-           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-       }
-           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops!!! Something went wrong");
+    public ResponseEntity<?> submitApplicationInformation(@RequestBody ApplicantInformation applicantInformation) {
+        try {
+            if (applicantInformation.getCustomerSSN() == null || applicantInformation.getFullName() == null ||
+                    applicantInformation.getLoanAmount() == null || applicantInformation.getSalaryAmount() == null ||
+                    applicantInformation.getEquityAmount() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("One or more required properties are missing");
+            }
+            String result = applicantionService.submitApplication(applicantInformation);
+            if (result != null && !result.contains("INVALID")) {
+                return ResponseEntity.status(HttpStatus.OK).body("Application Sent to Advisor , " +
+                        "your application ID is -> " + result);
+            } else if (result != null && result.contains("INVALID")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EQUITY AMOUNT IS NOT 15 % of LOAN Amount");
+            }
+        } catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops!!! Something went wrong");
 
     }
 
@@ -52,7 +57,7 @@ public class ApplicationController {
     }
 
     @PostMapping("/new")
-    public String addNewUser(@RequestBody UserInfo userInfo){
+    public String addNewUser(@RequestBody UserInfo userInfo) {
         return applicantionService.addUser(userInfo);
     }
 
