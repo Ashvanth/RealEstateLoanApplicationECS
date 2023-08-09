@@ -4,7 +4,7 @@ import { aws_ec2 as ec2, aws_ecs as ecs, aws_logs as logs, aws_ssm as ssm , aws_
 
 
 export class RealEstateLoanAppFargateStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     const vpc = new ec2.Vpc(this, 'MyVpc', {
       maxAzs: 2,

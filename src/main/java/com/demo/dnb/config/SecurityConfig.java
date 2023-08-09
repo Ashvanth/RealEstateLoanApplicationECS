@@ -26,7 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/application/v1/data", "/application/v1/new").permitAll()
+                .requestMatchers("/","/application/v1/data", "/application/v1/new").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/application/v1/allApplications")
                 .authenticated().and().formLogin().and().build();
